@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory Flip</title>
+<style>
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+#grid{display:grid;grid-template-columns:repeat(4,70px);grid-gap:10px;margin-top:2rem}
+.card{width:70px;height:70px;border-radius:8px;background:#1e88e5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:2rem;cursor:pointer}
+.card.flipped{background:#fff;border:2px solid #1e88e5;color:#1e88e5;cursor:default}
+#end{display:none;position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:1.5rem;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,.2);text-align:center}
+button{margin-top:1rem}
+</style>
+</head>
+<body>
+<div id="grid"></div>
+<div id="moves"></div>
+<div id="end">You did it in <span id="total"></span> moves!<br><button id="restart">Restart</button></div>
+<script>
+const shapes=['★','●','▲','❤','■','◆'];
+let first=null,second=null,moves=0,matched=0;
+const grid=document.getElementById('grid'),movesEl=document.getElementById('moves');
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function build(){grid.innerHTML='';moves=0;matched=0;movesEl.textContent='Moves: 0';const cards=shuffle([...shapes,...shapes]);cards.forEach((s,i)=>{const c=document.createElement('div');c.className='card';c.dataset.shape=s;c.textContent='?';c.addEventListener('click',()=>flip(c));grid.appendChild(c);});}
+function flip(c){if(c.classList.contains('flipped')||second)return;c.textContent=c.dataset.shape;c.classList.add('flipped');if(!first){first=c;}else{second=c;moves++;movesEl.textContent='Moves: '+moves;if(first.dataset.shape===second.dataset.shape){first=null;second=null;matched+=2;if(matched===12)finish();}else{setTimeout(()=>{first.textContent='?';second.textContent='?';first.classList.remove('flipped');second.classList.remove('flipped');first=null;second=null;},700);}}
+}
+function finish(){document.getElementById('total').textContent=moves;document.getElementById('end').style.display='block';}
+document.getElementById('restart').onclick=()=>{document.getElementById('end').style.display='none';build();};
+build();
+</script>
+</body>
+</html>

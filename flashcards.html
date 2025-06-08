@@ -3,92 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Number Flashcards</title>
+<title>ABC Cards</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f0f9ff;display:flex;flex-direction:column;align-items:center;min-height:100vh}
-#container{width:100%;max-width:480px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:pan-y}
-#card{width:80%;max-width:320px;height:220px;perspective:1000px;margin-bottom:1rem}
-#card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s}
-.flipped #card-inner{transform:rotateY(180deg)}
-.face{position:absolute;top:0;left:0;width:100%;height:100%;border:2px solid #2196f3;border-radius:10px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden}
-.front{font-size:4rem}
-.back{transform:rotateY(180deg);font-size:1.2rem;padding:.5rem;text-align:center}
-nav{margin-top:1rem}
-button{background:#2196f3;color:#fff;border:none;border-radius:5px;padding:.6rem 1rem;font-size:1rem;margin:0 .5rem;cursor:pointer}
-button:hover{background:#1976d2}
-button:active{background:#0d47a1}
-#progress{display:flex;margin-top:1rem}
-.dot{width:10px;height:10px;border:2px solid #2196f3;border-radius:50%;margin:0 3px}
-.filled{background:#2196f3}
-#counter{margin-top:.5rem;font-weight:bold}
-#complete{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,.9);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:10}
-#complete.show{display:flex}
-#confetti{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none}
-#confetti span{position:absolute;font-size:24px;animation:fall 3s linear infinite}
-@keyframes fall{from{transform:translateY(-10%)}to{transform:translateY(110%)}}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;display:flex;flex-direction:column;align-items:center;min-height:100vh;touch-action:pan-y}
+#card{position:relative;width:240px;height:240px;margin-top:2rem;perspective:800px}
+.face{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:2px solid #1e88e5;border-radius:12px;background:#fff;backface-visibility:hidden;transition:transform .6s}
+.front{font-size:9rem;color:#1e88e5}
+.back{transform:rotateY(180deg);flex-direction:column;font-size:5rem}
+#card.flipped .front{transform:rotateY(180deg)}
+#card.flipped .back{transform:rotateY(0)}
+.nav{display:flex;gap:2rem;margin:2rem;position:fixed;bottom:1rem}
+button{font-size:2rem;background:none;border:none;color:#1e88e5}
 </style>
 </head>
 <body>
-<div id="container">
-<div id="card" role="button" aria-label="Flip card">
-  <div id="card-inner">
-    <div class="face front"></div>
-    <div class="face back"></div>
-  </div>
+<div id="card" class="card">
+  <div class="face front"></div>
+  <div class="face back"></div>
 </div>
-<nav>
-  <button id="prev" aria-label="Previous card">🔙 Prev</button>
-  <button id="next" aria-label="Next card">Next 🔜</button>
-</nav>
-<div id="progress"></div>
-<div id="counter"></div>
-</div>
-<div id="complete">
-  <div id="confetti"></div>
-  <button id="again" aria-label="Play again">Play again</button>
+<div class="nav">
+  <button id="prev">◀️</button>
+  <button id="next">▶️</button>
 </div>
 <script>
 const deck=[
- {num:1,word:'one',emoji:'\uD83D\uDCA9',fact:'Most toilets flush in E flat'},
- {num:2,word:'two',emoji:'\uD83D\uDE80',fact:'Space smells like seared steak'},
- {num:3,word:'three',emoji:'\uD83D\uDC38',fact:'Frogs drink through their skin'},
- {num:4,word:'four',emoji:'\uD83D\uDE97',fact:'Cars were once powered by steam'},
- {num:5,word:'five',emoji:'\uD83D\uDCA1',fact:'Thomas Edison feared the dark'},
- {num:6,word:'six',emoji:'\uD83E\uDD84',fact:"Scotland's symbol is the unicorn"},
- {num:7,word:'seven',emoji:'\uD83C\uDF89',fact:'Confetti was invented in Italy'},
- {num:8,word:'eight',emoji:'\uD83D\uDD25',fact:'The Sun is 93m miles away'},
- {num:9,word:'nine',emoji:'\uD83C\uDF88',fact:'Balloons were made from bladders'},
- {num:10,word:'ten',emoji:'\uD83D\uDC51',fact:'A royal crown can weigh 3 pounds'}
+  {l:'A',w:'Ant',e:'🐜'},
+  {l:'B',w:'Banana',e:'🍌'},
+  {l:'C',w:'Cat',e:'🐱'},
+  {l:'D',w:'Dog',e:'🐶'},
+  {l:'E',w:'Eagle',e:'🦅'},
+  {l:'F',w:'Frog',e:'🐸'},
+  {l:'G',w:'Giraffe',e:'🦒'},
+  {l:'H',w:'House',e:'🏠'},
+  {l:'I',w:'Ice cream',e:'🍦'},
+  {l:'J',w:'Juice',e:'🧃'}
 ];
-let cards=[...deck];
-let index=0;
-let answered=new Set();
-const card=document.getElementById('card');
-const cardInner=document.getElementById('card-inner');
-const front=document.querySelector('.front');
-const back=document.querySelector('.back');
-const progress=document.getElementById('progress');
-const counter=document.getElementById('counter');
-const complete=document.getElementById('complete');
-const again=document.getElementById('again');
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()* (i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function buildProgress(){progress.innerHTML='';for(let i=0;i<deck.length;i++){const d=document.createElement('div');d.className='dot';progress.appendChild(d);}}
-function updateProgress(){progress.querySelectorAll('.dot').forEach((d,i)=>{d.classList.toggle('filled',answered.has(i+1));});counter.textContent='Cards left: '+(deck.length-answered.size);if(answered.size===deck.length)showComplete();}
-function showComplete(){complete.classList.add('show');createConfetti();}
-function hideComplete(){complete.classList.remove('show');document.getElementById('confetti').innerHTML='';}
-function createConfetti(){const c=document.getElementById('confetti');for(let i=0;i<40;i++){const s=document.createElement('span');s.textContent='🎊';s.style.left=Math.random()*100+'%';s.style.animationDelay=Math.random()*2+'s';c.appendChild(s);}}
-function loadCard(){const data=cards[index];front.textContent=data.num;back.innerHTML='<div style="font-size:2rem">'+data.word+' '+data.emoji+'</div><div>'+data.fact+'</div>';card.classList.remove('flipped');}
-function show(i){index=(i+cards.length)%cards.length;loadCard();}
-function flip(){const willShowBack=!card.classList.contains('flipped');card.classList.toggle('flipped');if(willShowBack){answered.add(cards[index].num);updateProgress();}}
-function restart(){cards=shuffle([...deck]);index=0;answered.clear();hideComplete();loadCard();updateProgress();}
-let startX=null;
-card.addEventListener('pointerdown',e=>{startX=e.clientX;});
-card.addEventListener('pointerup',e=>{if(startX===null)return;const dx=e.clientX-startX;if(Math.abs(dx)>30){show(dx<0?index+1:index-1);}else{flip();}startX=null;});
-document.getElementById('prev').addEventListener('click',()=>show(index-1));
-document.getElementById('next').addEventListener('click',()=>show(index+1));
-again.addEventListener('click',restart);
-buildProgress();restart();
+let i=0,showBack=false,startX=null;
+const card=document.getElementById('card'),front=card.querySelector('.front'),back=card.querySelector('.back');
+function speak(t){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t));}
+function load(){const d=deck[i];front.textContent=d.l;back.innerHTML=`<div>${d.e}</div><div style="font-size:2rem">${d.w}</div>`;}
+function flip(){showBack=!showBack;card.classList.toggle('flipped',showBack);if(showBack)speak(deck[i].w);}
+function show(n){i=(n+deck.length)%deck.length;showBack=false;card.classList.remove('flipped');load();}
+card.addEventListener('pointerdown',e=>{startX=e.clientX});
+card.addEventListener('pointerup',e=>{if(startX===null)return;const dx=e.clientX-startX;if(Math.abs(dx)>30){show(dx<0?i+1:i-1);}else{flip();}startX=null});
+prev.onclick=()=>show(i-1);next.onclick=()=>show(i+1);
+load();
 </script>
 </body>
 </html>
