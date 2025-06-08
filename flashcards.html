@@ -1,1 +1,59 @@
-<!DOCTYPE html><html><head><meta charset='utf-8'><title>Flashcards</title></head><body><h1>Flashcards placeholder</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flashcards</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f0f9ff;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+#card{width:200px;height:300px;perspective:1000px}
+#card .inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s}
+#card.flip .inner{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;height:100%;border-radius:10px;backface-visibility:hidden;border:2px solid #1e88e5;display:flex;align-items:center;justify-content:center;background:#fff}
+.front{font-size:4rem}
+.back{transform:rotateY(180deg);font-size:1.5rem;padding:.5rem;text-align:center}
+nav{margin-top:1rem}
+button{padding:.5rem 1rem;margin:0 .5rem;font-size:1rem;border:none;border-radius:5px;background:#1e88e5;color:#fff}
+</style>
+</head>
+<body>
+<div id="card">
+  <div class="inner">
+    <div class="face front"></div>
+    <div class="face back"></div>
+  </div>
+</div>
+<nav>
+  <button id="prev">Prev</button>
+  <button id="next">Next</button>
+</nav>
+<script>
+const facts=[
+  '🚗 Cars can fly in dreams!',
+  '💩 Poop emojis are always funny.',
+  '\u201cSus\u201d means something is suspicious.',
+  '🚗 Some cars run on imagination.',
+  '💩 Even dinosaurs had to poop.',
+  '\u201cSus\u201d slang comes from Among Us.',
+  '🚗 Race cars spelled backwards is racecar.',
+  '💩 Poop used to be called night soil.',
+  '\u201cSus\u201d rhymes with bus.',
+  '🚗 Electric cars make little noise.'
+];
+let index=0;
+const card=document.getElementById('card');
+const inner=card.querySelector('.inner');
+const front=card.querySelector('.front');
+const back=card.querySelector('.back');
+function update(){front.textContent=index+1;back.textContent=facts[index];}
+function show(i){index=(i+facts.length)%facts.length;inner.style.transform='rotateY(0deg)';card.classList.remove('flip');update();}
+function flip(){card.classList.toggle('flip');}
+document.getElementById('prev').onclick=()=>show(index-1);
+document.getElementById('next').onclick=()=>show(index+1);
+card.addEventListener('click',flip);
+let startX=null;
+card.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;});
+card.addEventListener('touchend',e=>{if(startX===null)return;const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>30){show(dx>0?index-1:index+1);}startX=null;});
+update();
+</script>
+</body>
+</html>
