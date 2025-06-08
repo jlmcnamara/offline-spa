@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Colour Match</title>
+<style>
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f0f9ff;display:flex;flex-direction:column;align-items:center;min-height:100vh;touch-action:none}
+#board{position:relative;width:100%;max-width:400px;height:70vh;margin-top:2rem;border:2px dashed #ccc;border-radius:10px}
+.target{position:absolute;width:80px;height:80px;border:4px dashed #666;border-radius:12px}
+.square{position:absolute;width:80px;height:80px;border-radius:12px;touch-action:none}
+#msg{display:none;position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:2rem;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,.2);text-align:center}
+button{margin-top:1rem;font-size:1.2rem}
+</style>
+</head>
+<body>
+<div id="board"></div>
+<div id="msg">Great job, Quinn &amp; Jax!<br><button id="reset">Reset</button></div>
+<script>
+const colours=[{c:'red',y:50},{c:'green',y:150},{c:'blue',y:250}];
+const board=document.getElementById('board');
+const msg=document.getElementById('msg');
+let placed=0,drag=null,offsetX=0,offsetY=0;
+function make(){board.innerHTML='';placed=0;colours.forEach((o,i)=>{
+  const t=document.createElement('div');t.className='target';t.style.left=40+120*i+'px';t.style.top='10px';t.dataset.c=o.c;t.style.borderColor=o.c;board.appendChild(t);
+  const s=document.createElement('div');s.className='square';s.style.background=o.c;s.style.left=40+120*i+'px';s.style.top='300px';s.dataset.c=o.c;board.appendChild(s);
+});}
+function start(e){if(!e.target.classList.contains('square'))return;drag=e.target;const r=drag.getBoundingClientRect();offsetX=e.clientX-r.left;offsetY=e.clientY-r.top;drag.setPointerCapture(e.pointerId);} 
+function move(e){if(!drag)return;drag.style.left=e.clientX-offsetX-board.offsetLeft+'px';drag.style.top=e.clientY-offsetY-board.offsetTop+'px';}
+function end(e){if(!drag)return;const t=[...board.querySelectorAll('.target')].find(x=>{
+  const r=x.getBoundingClientRect(),s=drag.getBoundingClientRect();return s.left<r.right&&s.right>r.left&&s.top<r.bottom&&s.bottom>r.top;});
+  if(t&&t.dataset.c===drag.dataset.c&&!t.filled){drag.style.left=t.style.left;drag.style.top=t.style.top;t.filled=true;drag.removeEventListener('pointerdown',start);placed++;speechSynthesis.speak(new SpeechSynthesisUtterance('Yay!'));if(placed===3)msg.style.display='block';}
+  drag.releasePointerCapture(e.pointerId);drag=null;}
+board.addEventListener('pointerdown',start);board.addEventListener('pointermove',move);board.addEventListener('pointerup',end);document.getElementById('reset').onclick=()=>{msg.style.display='none';make();};
+make();
+</script>
+</body>
+</html>

@@ -1,52 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quinn & Jax Offline Fun</title>
-  <link rel="manifest" href="manifest.json">
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f0f9ff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    h1 {
-      color: #1e88e5;
-      margin-bottom: 2rem;
-      font-size: 2.4rem;
-      text-align: center;
-    }
-    a.card {
-      display: inline-block;
-      padding: 1.5rem 2rem;
-      margin: 0.5rem;
-      background: #1e88e5;
-      color: #fff;
-      border-radius: 12px;
-      text-decoration: none;
-      font-size: 1.2rem;
-      transition: transform 0.2s;
-    }
-    a.card:hover,
-    a.card:active {
-      transform: rotate(-3deg) scale(1.05);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quinn & Jax Offline Fun</title>
+<link rel="manifest" href="manifest.json">
+<style>
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f0f9ff;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+h1{color:#1e88e5;margin:1rem 0;font-size:2rem}
+.grid{display:flex;flex-wrap:wrap;justify-content:center;width:100%;max-width:600px}
+.card{width:140px;height:140px;margin:.5rem;background:#fff;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#333;font-size:1rem;transition:transform .2s}
+.card:active,.card:hover{transform:translateY(-6px)}
+@media(min-width:600px){.grid{justify-content:space-around}}
+</style>
 </head>
 <body>
-  <h1>Quinn &amp; Jax Offline Fun</h1>
-  <a class="card" href="car-game.html">🚗 Play Sus Car Dash</a>
-  <a class="card" href="flashcards.html">🧠 Flashcards</a>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
+<h1>Quinn &amp; Jax Offline Fun</h1>
+<div class="grid">
+ <a class="card" href="car-game.html">🚗<br>Sus Car Dash</a>
+ <a class="card" href="flashcards.html">🔠<br>ABC Cards</a>
+ <a class="card" href="colour-match.html">🎨<br>Colour Match</a>
+ <a class="card" href="memory-match.html">🃏<br>Memory Flip</a>
+</div>
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('service-worker.js');}
+</script>
 </body>
 </html>
