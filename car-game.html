@@ -1,56 +1,61 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sus Car Dash</title>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Car Dodge</title>
 <style>
-body{font-family:Arial,Helvetica,sans-serif;background:#222;color:#fff;text-align:center;margin:0;padding:1rem}
-#game{position:relative;margin:0 auto 1rem;width:300px;height:500px;background:#555;overflow:hidden}
-.road-line{position:absolute;width:6px;height:100%;top:0;background:repeating-linear-gradient(#fff 0 20px,transparent 20px 40px);animation:scroll 1s linear infinite}
-.road-line:nth-child(1){left:100px}
-.road-line:nth-child(2){left:200px}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#111;color:#fff;text-align:center}
+#game{position:relative;margin:1rem auto;width:100%;max-width:320px;height:500px;background:#555;overflow:hidden;border:2px solid #333;border-radius:10px}
+.lane{position:absolute;top:0;width:6px;height:100%;background:repeating-linear-gradient(#fff 0 20px,transparent 20px 40px);animation:scroll 1s linear infinite}
+.lane:nth-child(1){left:106px}
+.lane:nth-child(2){left:212px}
 @keyframes scroll{to{background-position-y:40px}}
-#player,.obstacle{position:absolute;width:60px;height:100px;border-radius:10px}
-#player{background:#1e88e5;bottom:10px;left:120px}
-.obstacle{background:#e53935;top:-100px}
-.explosion{position:absolute;width:80px;height:80px;border-radius:50%;background:orange;opacity:0;pointer-events:none;animation:boom .5s forwards}
-@keyframes boom{0%{transform:scale(.5);opacity:1}100%{transform:scale(2);opacity:0}}
+#car,.obstacle{position:absolute;width:60px;height:100px;border-radius:10px}
+#car{background:#2196f3;bottom:10px;left:130px}
+.obstacle{background:#e53935;top:-120px}
+.boom{position:absolute;width:80px;height:80px;border-radius:50%;background:orange;opacity:0;pointer-events:none;animation:explode .5s forwards}
+@keyframes explode{0%{transform:scale(.5);opacity:1}100%{transform:scale(2);opacity:0}}
 .shake{animation:shake .5s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
-#scoreBoard{margin-bottom:1rem;font-size:1.2rem}
-#controls{display:flex;justify-content:center;gap:2rem}
+#score{margin:0.5rem;font-size:1.2rem}
+#controls{display:flex;justify-content:center;gap:2rem;margin-bottom:1rem}
 #controls button{font-size:2rem;padding:.5rem 1rem}
 </style>
-</head><body>
-<h1>Sus Car Dash</h1>
+</head>
+<body>
+<h1>Car Dodge</h1>
 <div id="game">
- <div class="road-line"></div>
- <div class="road-line"></div>
- <div id="player"></div>
+  <div class="lane"></div>
+  <div class="lane"></div>
+  <div id="car"></div>
 </div>
-<div id="scoreBoard">Score: <span id="score">0</span> | High Score: <span id="high">0</span></div>
-<div id="controls"><button id="leftBtn">&#8592;</button><button id="rightBtn">&#8594;</button></div>
+<div id="score">Score: <span id="s">0</span> | High Score: <span id="h">0</span></div>
+<div id="controls"><button id="left">&#8592;</button><button id="right">&#8594;</button></div>
 <script>
 const game=document.getElementById('game');
-const player=document.getElementById('player');
-const scoreEl=document.getElementById('score');
-const highEl=document.getElementById('high');
-const leftBtn=document.getElementById('leftBtn');
-const rightBtn=document.getElementById('rightBtn');
-const laneX=[20,120,220];
-let lane=1,obstacles=[],score=0,high=+localStorage.getItem('hiScore')||0,speed=2,lastInc=Date.now();
+const car=document.getElementById('car');
+const scoreEl=document.getElementById('s');
+const highEl=document.getElementById('h');
+const leftBtn=document.getElementById('left');
+const rightBtn=document.getElementById('right');
+const laneX=[20,130,240];
+let lane=1,obs=[],score=0,high=+localStorage.getItem('hiScore')||0,speed=2,lastBoost=Date.now();
 highEl.textContent=high;
-function setLane(l){lane=Math.max(0,Math.min(2,l));player.style.left=laneX[lane]+"px"}
+function setLane(l){lane=Math.max(0,Math.min(2,l));car.style.left=laneX[lane]+"px"}
 leftBtn.onclick=()=>setLane(lane-1);
 rightBtn.onclick=()=>setLane(lane+1);
-window.onkeydown=e=>{if(e.key==='ArrowLeft')setLane(lane-1);if(e.key==='ArrowRight')setLane(lane+1)};
-function spawn(){const o=document.createElement('div');o.className='obstacle';const l=Math.floor(Math.random()*3);o.dataset.l=l;o.style.left=laneX[l]+"px";o.style.top='-100px';game.appendChild(o);obstacles.push({el:o,y:-100,l})}
-function boom(x,y){const ex=document.createElement('div');ex.className='explosion';ex.style.left=x-10+'px';ex.style.top=y-20+'px';game.appendChild(ex);setTimeout(()=>ex.remove(),500)}
-function endGame(){boom(laneX[lane]+30,player.offsetTop);game.classList.add('shake');setTimeout(()=>game.classList.remove('shake'),500);if(score>high){high=score;localStorage.setItem('hiScore',high);highEl.textContent=high}score=0;scoreEl.textContent=score;obstacles.forEach(o=>o.el.remove());obstacles=[];speed=2;lastInc=Date.now()}
+window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')setLane(lane-1);if(e.key==='ArrowRight')setLane(lane+1)});
+function spawn(){const o=document.createElement('div');o.className='obstacle';const l=Math.floor(Math.random()*3);o.dataset.l=l;o.style.left=laneX[l]+"px";o.style.top='-120px';game.appendChild(o);obs.push({el:o,y:-120,l})}
+function explode(x,y){const b=document.createElement('div');b.className='boom';b.style.left=x-10+'px';b.style.top=y-20+'px';game.appendChild(b);setTimeout(()=>b.remove(),500)}
+function endGame(){explode(laneX[lane]+30,car.offsetTop);game.classList.add('shake');setTimeout(()=>game.classList.remove('shake'),500);if(score>high){high=score;localStorage.setItem('hiScore',high);highEl.textContent=high}score=0;scoreEl.textContent=0;obs.forEach(o=>o.el.remove());obs=[];speed=2;lastBoost=Date.now()}
 let last=0,spawnTimer=0;
-function loop(t){if(!last)last=t;const dt=t-last;last=t;spawnTimer+=dt;if(spawnTimer>1200){spawn();spawnTimer=0}
-if(Date.now()-lastInc>30000){speed+=.5;lastInc=Date.now()}
-obstacles.forEach((o,i)=>{o.y+=speed;o.el.style.top=o.y+'px';if(o.y>500){o.el.remove();obstacles.splice(i,1);score++;scoreEl.textContent=score}else if(o.y+100>player.offsetTop&&o.y<player.offsetTop+100&&o.l===lane){endGame()}});
+function loop(t){if(!last)last=t;const dt=t-last;last=t;spawnTimer+=dt;if(spawnTimer>1000){spawn();spawnTimer=0}
+if(Date.now()-lastBoost>30000){speed+=.5;lastBoost=Date.now()}
+obs.forEach((o,i)=>{o.y+=speed;o.el.style.top=o.y+'px';if(o.y>500){o.el.remove();obs.splice(i,1);score++;scoreEl.textContent=score}else if(o.y+100>car.offsetTop&&o.y<car.offsetTop+100&&o.l===lane){endGame()}});
 requestAnimationFrame(loop)}
-setLane(1);requestAnimationFrame(loop);
+setLane(1);
+requestAnimationFrame(loop);
 </script>
-</body></html>
+</body>
+</html>
