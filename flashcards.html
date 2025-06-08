@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Flashcards</title>
 <style>
-body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f0f9ff;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f0f9ff;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
 #card{width:200px;height:300px;perspective:1000px}
-#card .inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s}
+#card .inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s}
 #card.flip .inner{transform:rotateY(180deg)}
 .face{position:absolute;width:100%;height:100%;border-radius:10px;backface-visibility:hidden;border:2px solid #1e88e5;display:flex;align-items:center;justify-content:center;background:#fff}
 .front{font-size:4rem}
-.back{transform:rotateY(180deg);font-size:1.5rem;padding:.5rem;text-align:center}
+.back{transform:rotateY(180deg);font-size:1.3rem;padding:.5rem;text-align:center}
 nav{margin-top:1rem}
 button{padding:.5rem 1rem;margin:0 .5rem;font-size:1rem;border:none;border-radius:5px;background:#1e88e5;color:#fff}
 </style>
@@ -28,16 +29,16 @@ button{padding:.5rem 1rem;margin:0 .5rem;font-size:1rem;border:none;border-radiu
 </nav>
 <script>
 const facts=[
-  '🚗 Cars can fly in dreams!',
-  '💩 Poop emojis are always funny.',
-  '\u201cSus\u201d means something is suspicious.',
-  '🚗 Some cars run on imagination.',
-  '💩 Even dinosaurs had to poop.',
-  '\u201cSus\u201d slang comes from Among Us.',
-  '🚗 Race cars spelled backwards is racecar.',
-  '💩 Poop used to be called night soil.',
-  '\u201cSus\u201d rhymes with bus.',
-  '🚗 Electric cars make little noise.'
+  '🚗 Cars once ran on steam.',
+  '💩 You can\'t hum while holding your nose.',
+  '🐸 Some frogs glow in the dark.',
+  '🍕 Pizza was first called "flatbread".',
+  '🚀 Astronauts grow taller in space.',
+  '🍦 Ice cream cones were invented by accident.',
+  '🦄 Unicorn is the national animal of Scotland.',
+  '🐌 A snail can sleep for three years.',
+  '🎩 Abraham Lincoln stored things in his hat.',
+  '🐒 Monkeys can learn sign language.'
 ];
 let index=0;
 const card=document.getElementById('card');
